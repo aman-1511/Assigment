@@ -73,8 +73,12 @@ A full-stack application for managing campaigns and generating personalized Link
 
 ## Demo Images
 
-![Image](https://github.com/user-attachments/assets/0f2bb6f8-4588-40be-91c1-f84ab18d7e17)
-
+- Home Page
+![Image](https://github.com/user-attachments/assets/87d5f203-4cc0-4590-a54b-182b463c4b20)
+- From Page
+![Image](https://github.com/user-attachments/assets/2b0b2b71-01ef-4735-a5ef-f9fd91146eec)  
+- Message Generator
+![Image](https://github.com/user-attachments/assets/0b7f01a4-de48-4c96-8b56-b815c67532bb)  
 
 ### Campaign APIs
 - `GET /campaigns` - Fetch all campaigns (excluding DELETED)
