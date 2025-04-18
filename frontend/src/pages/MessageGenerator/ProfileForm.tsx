@@ -1,7 +1,7 @@
 import React from 'react';
 import { LinkedInProfile } from '../../types';
 
-// Form field configuration to reduce redundancy
+
 const formFields = [
   { id: 'name', label: 'Name*', type: 'text', required: true },
   { id: 'job_title', label: 'Job Title*', type: 'text', required: true },

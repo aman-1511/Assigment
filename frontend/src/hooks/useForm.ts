@@ -6,7 +6,7 @@ function useForm<T>(initialValues: T) {
   const [formData, setFormData] = useState<T>(initialValues);
   const [errors, setErrors] = useState<Record<string, string>>({});
   
-  // Handle standard form input changes
+
   const handleChange = useCallback((e: FormChangeEvent) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -14,7 +14,7 @@ function useForm<T>(initialValues: T) {
       [name]: value
     }));
     
-    // Clear error for this field if it exists
+   
     if (errors[name]) {
       setErrors(prev => {
         const newErrors = { ...prev };
@@ -33,18 +33,18 @@ function useForm<T>(initialValues: T) {
     }));
   }, []);
   
-  // Reset form to initial values
+ 
   const resetForm = useCallback(() => {
     setFormData(initialValues);
     setErrors({});
   }, [initialValues]);
   
-  // Set form data directly
+ 
   const setFormValues = useCallback((values: Partial<T>) => {
     setFormData(prev => ({ ...prev, ...values }));
   }, []);
   
-  // Set error for a specific field
+ 
   const setError = useCallback((fieldName: string, message: string) => {
     setErrors(prev => ({
       ...prev,
@@ -52,7 +52,7 @@ function useForm<T>(initialValues: T) {
     }));
   }, []);
   
-  // Clear all errors
+ 
   const clearErrors = useCallback(() => {
     setErrors({});
   }, []);

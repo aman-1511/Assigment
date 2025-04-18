@@ -9,28 +9,28 @@ import useApi from '../../hooks/useApi';
 import './Dashboard.css';
 
 const Dashboard: React.FC = () => {
-  // Use the custom API hook for campaigns
+  
   const campaignsApi = useApi<Campaign[]>(() => getCampaigns());
   
-  // Fetch campaigns on component mount - only once
+
   useEffect(() => {
     campaignsApi.execute();
-    // Execute dependency removed to prevent infinite loop
+    
   }, []);
   
-  // Handle campaign deletion
+  
   const handleDelete = useCallback(async (id: string) => {
     if (window.confirm('Are you sure you want to delete this campaign?')) {
       try {
         await deleteCampaign(id);
-        campaignsApi.execute(); // Refresh the list
+        campaignsApi.execute(); 
       } catch (err) {
         console.error('Failed to delete campaign:', err);
       }
     }
   }, [campaignsApi]);
 
-  // Toggle campaign status between ACTIVE and INACTIVE
+ 
   const toggleStatus = useCallback(async (campaign: Campaign) => {
     try {
       const newStatus = campaign.status === CampaignStatus.ACTIVE 
@@ -38,20 +38,19 @@ const Dashboard: React.FC = () => {
         : CampaignStatus.ACTIVE;
       
       await updateCampaign(campaign._id, { status: newStatus });
-      campaignsApi.execute(); // Refresh the list
+      campaignsApi.execute(); 
     } catch (err) {
       console.error('Failed to update campaign status:', err);
     }
   }, [campaignsApi]);
 
-  // Add error retry logic with backoff
+
   useEffect(() => {
     let retryCount = 0;
     const maxRetries = 3;
-    
-    // If there's an error, try to fetch again with exponential backoff
+
     if (campaignsApi.error && campaignsApi.error.includes('ERR_INSUFFICIENT_RESOURCES')) {
-      const retryDelay = Math.pow(2, retryCount) * 1000; // Exponential backoff
+      const retryDelay = Math.pow(2, retryCount) * 1000; 
       
       if (retryCount < maxRetries) {
         const timer = setTimeout(() => {

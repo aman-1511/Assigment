@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import campaignRoutes from './routes/campaignRoutes';
 import messageRoutes from './routes/messageRoutes';
 
-// Load environment variables
+
 dotenv.config();
 
 const app = express();

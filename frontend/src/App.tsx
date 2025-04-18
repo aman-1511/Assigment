@@ -12,7 +12,7 @@ import CampaignForm from './pages/CampaignForm';
 import MessageGenerator from './pages/MessageGenerator';
 import './styles/global.css';
 
-// Root layout component with navbar
+
 const Layout = () => {
   return (
     <>
@@ -24,7 +24,7 @@ const Layout = () => {
   );
 };
 
-// Create router without incompatible future flags
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>

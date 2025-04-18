@@ -21,7 +21,7 @@ const CampaignForm: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   
-  // Use the form hook for managing form state
+  
   const { 
     formData, 
     handleChange, 
@@ -31,7 +31,7 @@ const CampaignForm: React.FC = () => {
 
   const isEditMode = !!id;
 
-  // Fetch campaign data if in edit mode
+
   useEffect(() => {
     const fetchCampaign = async () => {
       if (!id) return;
@@ -60,7 +60,7 @@ const CampaignForm: React.FC = () => {
     }
   }, [id, isEditMode, setFormValues]);
 
-  // Handle form submission
+  
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     

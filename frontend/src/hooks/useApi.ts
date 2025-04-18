@@ -15,7 +15,7 @@ function useApi<T, P = void>(apiFunction: ApiFunction<T, P>) {
     error: null
   });
   
-  // Execute the API call
+
   const execute = useCallback(async (params: P) => {
     try {
       setState(prev => ({ ...prev, loading: true, error: null }));
@@ -31,7 +31,7 @@ function useApi<T, P = void>(apiFunction: ApiFunction<T, P>) {
     }
   }, [apiFunction]);
   
-  // Reset the state
+  
   const reset = useCallback(() => {
     setState({
       data: null,
