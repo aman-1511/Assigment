@@ -71,6 +71,11 @@ A full-stack application for managing campaigns and generating personalized Link
 
 ## API Endpoints
 
+## Demo Images
+
+![Image](https://github.com/user-attachments/assets/0f2bb6f8-4588-40be-91c1-f84ab18d7e17)
+
+
 ### Campaign APIs
 - `GET /campaigns` - Fetch all campaigns (excluding DELETED)
 - `GET /campaigns/:id` - Fetch a single campaign by ID
