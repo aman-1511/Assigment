@@ -1,76 +1,79 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { createCampaign, getCampaign, updateCampaign } from '../api';
-import { CampaignFormData, CampaignStatus } from '../types';
+import { createCampaign, getCampaign, updateCampaign } from '../../api';
+import { CampaignFormData, CampaignStatus } from '../../types';
+import useForm from '../../hooks/useForm';
+import LoadingIndicator from '../../components/common/LoadingIndicator';
+import ErrorAlert from '../../components/common/ErrorAlert';
 import './CampaignForm.css';
+
+const initialFormState: CampaignFormData = {
+  name: '',
+  description: '',
+  status: CampaignStatus.INACTIVE,
+  leads: [],
+  accountIDs: []
+};
 
 const CampaignForm: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [formData, setFormData] = useState<CampaignFormData>({
-    name: '',
-    description: '',
-    status: CampaignStatus.INACTIVE,
-    leads: [],
-    accountIDs: [],
-  });
-
   
+  // Use the form hook for managing form state
+  const { 
+    formData, 
+    handleChange, 
+    handleArrayChange, 
+    setFormValues 
+  } = useForm<CampaignFormData>(initialFormState);
+
   const isEditMode = !!id;
 
-  
+  // Fetch campaign data if in edit mode
   useEffect(() => {
+    const fetchCampaign = async () => {
+      if (!id) return;
+
+      try {
+        setLoading(true);
+        const campaign = await getCampaign(id);
+        setFormValues({
+          name: campaign.name,
+          description: campaign.description,
+          status: campaign.status,
+          leads: campaign.leads,
+          accountIDs: campaign.accountIDs,
+        });
+        setError(null);
+      } catch (err) {
+        setError('Failed to fetch campaign details');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (isEditMode) {
       fetchCampaign();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
-
-  const fetchCampaign = async () => {
-    if (!id) return;
-
-    try {
-      setLoading(true);
-      const campaign = await getCampaign(id);
-      setFormData({
-        name: campaign.name,
-        description: campaign.description,
-        status: campaign.status,
-        leads: campaign.leads,
-        accountIDs: campaign.accountIDs,
-      });
-    } catch (err) {
-      setError('Failed to fetch campaign details');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Handle form input changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  // Handle arrays (leads and accountIDs)
-  const handleArrayChange = (e: React.ChangeEvent<HTMLTextAreaElement>, field: 'leads' | 'accountIDs') => {
-    const values = e.target.value.split('\n').filter(item => item.trim() !== '');
-    setFormData(prev => ({ ...prev, [field]: values }));
-  };
+  }, [id, isEditMode, setFormValues]);
 
   // Handle form submission
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
+    
     try {
       setLoading(true);
+      setError(null);
+      
       if (isEditMode && id) {
         await updateCampaign(id, formData);
       } else {
         await createCampaign(formData);
       }
+      
       navigate('/');
     } catch (err) {
       setError(`Failed to ${isEditMode ? 'update' : 'create'} campaign`);
@@ -78,17 +81,17 @@ const CampaignForm: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [formData, id, isEditMode, navigate]);
 
   if (loading && isEditMode) {
-    return <div className="loading">Loading campaign data...</div>;
+    return <LoadingIndicator message="Loading campaign data..." />;
   }
 
   return (
     <div className="campaign-form-container">
       <h1>{isEditMode ? 'Edit Campaign' : 'Create New Campaign'}</h1>
       
-      {error && <div className="alert alert-danger">{error}</div>}
+      <ErrorAlert message={error} />
       
       <form className="campaign-form card" onSubmit={handleSubmit}>
         <div className="form-group">
@@ -145,7 +148,7 @@ const CampaignForm: React.FC = () => {
         </div>
         
         <div className="form-group">
-          <label htmlFor="accountIDs">Account IDs (one ID per line)</label>
+          <label htmlFor="accountIDs">Account IDs (one per line)</label>
           <textarea
             id="accountIDs"
             name="accountIDs"
@@ -153,7 +156,7 @@ const CampaignForm: React.FC = () => {
             value={formData.accountIDs.join('\n')}
             onChange={(e) => handleArrayChange(e, 'accountIDs')}
             rows={4}
-            placeholder="123&#10;456"
+            placeholder="account123&#10;account456"
           />
         </div>
         
